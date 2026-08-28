@@ -1,0 +1,28 @@
+# Credentials and local authentication
+**/auth.json
+**/*credentials*
+**/*secret*
+**/*token*
+**/*.pem
+**/*.key
+
+# User-specific configuration snapshots and backups
+**/*config.local.*
+**/*config.user.*
+**/*.bak
+**/*.backup
+**/backups/
+
+# Logs, caches, temporary and generated files
+**/*.log
+**/logs/
+**/.cache/
+**/cache/
+**/tmp/
+**/temp/
+**/.tmp/
+**/.codex/backups/
+
+# Local overrides (the checked-in project config remains trackable)
+.codex/config.local.toml
+.codex/agents.local/

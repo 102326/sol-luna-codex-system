@@ -1,0 +1,6 @@
+interface:
+  display_name: "Sol-Luna Development"
+  short_description: "Delegate bounded development work and verify it"
+  default_prompt: "Use $sol-luna to plan, delegate, review, and verify this development task."
+policy:
+  allow_implicit_invocation: true
