@@ -1,7 +1,7 @@
 # Sol-Luna development rules
 
 - Keep requirements, decisions, risk judgments, and final acceptance in the primary Sol thread.
-- Use `gpt-5.6-sol` at medium reasoning for the primary controller. Delegate bounded exploration, implementation, and testing to the project custom agents `luna_explorer`, `luna_implementer`, and `luna_tester` when the work fits their roles.
+- Use `gpt-5.6-sol` at medium reasoning as the fallback for the primary controller when the user has not explicitly selected a model or reasoning effort; explicit user selections take precedence. Delegate bounded exploration, implementation, and testing to the project custom agents `luna_explorer`, `luna_implementer`, and `luna_tester` when the work fits their roles.
 - Keep search output, test logs, and intermediate exploration in subagent threads; return concise evidence-backed summaries to Sol.
 - Parallelize only independent read-heavy exploration, tests, retrieval, or log analysis. Serialize tasks that can modify the same file. Without independent worktrees, never let multiple subagents edit the same code region concurrently.
 - Every delegation must state: goal; allowed files/directories; forbidden scope; known context; completion criteria; validation commands; rollback method; and the required result sections.

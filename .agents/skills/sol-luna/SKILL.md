@@ -5,7 +5,7 @@ description: Orchestrate bounded software-development work with Sol planning and
 
 # Sol-Luna workflow
 
-Keep the primary Sol thread responsible for requirements, constraints, decisions, risk, and final acceptance. Use Sol with `gpt-5.6-sol` and medium reasoning. Delegate only bounded work to the project custom agents:
+Keep the primary Sol thread responsible for requirements, constraints, decisions, risk, and final acceptance. Use Sol with `gpt-5.6-sol` and medium reasoning as the fallback when the user has not explicitly selected a model or reasoning effort; explicit user selections take precedence. Delegate only bounded work to the project custom agents:
 
 - `luna_explorer`: read-only code discovery, call-chain tracing, and evidence gathering.
 - `luna_implementer`: small workspace changes after the design and acceptance criteria are fixed.
