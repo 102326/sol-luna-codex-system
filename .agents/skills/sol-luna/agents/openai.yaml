@@ -1,6 +1,6 @@
 interface:
-  display_name: "Sol-Luna Development"
-  short_description: "Use a small worker only when delegation saves work"
-  default_prompt: "Use $sol-luna to delegate a bounded development subtask only if it saves time or context; otherwise work inline."
+  display_name: "Sol-Luna Capability Router"
+  short_description: "Route bounded work by risk and required capability"
+  default_prompt: "Use $sol-luna to choose the smallest sufficient inline or delegated approach, preserving Primary acceptance."
 policy:
   allow_implicit_invocation: true

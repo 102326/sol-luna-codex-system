@@ -1,38 +1,34 @@
-# Sol–Luna Codex System
+# Sol-Luna Codex System
 
-This repository packages a reusable Sol–Luna development workflow for Codex. The primary agent remains responsible for decisions, review, and acceptance. The test branch trials a lower-overhead delegation policy; model availability must be checked on the active host.
+Capability-aware delegation with Primary owning scope, decisions, integration and acceptance. Retains the `sol-luna` skill name. Choose a sufficient role using scope, ambiguity, risk and verifiability while considering handoff, review and rework costs. Risk is a gate, not a score averaged away by a small diff. No mandatory multi-agent pipeline or guaranteed cost reduction.
 
-## Contents
+## Roles and defaults
 
-- `.codex/config.toml`: project controller and multi-agent defaults.
-- `.codex/agents/`: bounded Explorer, Implementer, Tester, and High-escalation agent definitions.
-- `.agents/skills/sol-luna/`: the explicit `$sol-luna` workflow skill and invocation metadata.
-- `AGENTS.md`: persistent project rules.
+| Role | Model / effort | Boundary |
+|---|---|---|
+| luna_explorer | gpt-6-luna / low | Read-only evidence |
+| luna_implementer | gpt-6-luna / low | Low-risk bounded edits |
+| luna_tester | gpt-6-luna / low | Tests/builds; no product-source edits |
+| sol_implementer | gpt-6-sol / medium | Settled cross-file implementation |
+| astra_architect | gpt-6-astra / high | Read-only consequential design proposal |
+| astra_escalation | gpt-6-astra / high | Independent read-only risk review |
 
-## Installation
+Role names are compatibility identifiers; TOML model fields are configurable mappings, not capability guarantees. `sol_escalation` remains as a deprecated compatibility name using the same Astra review settings. Do not schedule both names for one review. Qualified Primary may design inline; design authors do not count as their own independent reviewers. Explicit user choices take precedence.
 
-Copy or merge the included relative paths into a target repository. Preserve existing files and merge TOML tables rather than replacing an existing configuration. Explicit user model and reasoning selections take precedence. The payload leaves the primary model unchanged; project configuration supplies only subagent defaults. Review the resulting diff before use.
+## Installation and migration
 
-The payload intentionally contains no credentials, saved logs, caches, generated validation fixtures, or user-specific absolute paths. It does not initialize a Git repository.
+Back up the target `AGENTS.md`, `.codex/config.toml`, `.codex/agents/` and `.agents/skills/sol-luna/`. Merge the packaged files into those paths; preserve unrelated configuration, existing permissions and user model selection. Do not replace the entire project config. Update all three Luna role files together with the skill to remove old fixed-contract requirements. Keep `max_concurrent_threads_per_session = 3`; default to Primary plus one worker.
 
-## Validation
+Custom agents live in `.codex/agents/*.toml`. Inspect any explicit role references in the target config before retiring aliases. Preserve the legacy `sol_escalation` name during migration; new tasks should select `astra_escalation`. Start a new session and check the live role/model inventory: existing sessions may retain old role definitions. Do not silently downgrade high-risk work or raise cost if a configured model is unavailable; return the routing decision to Primary. This package does not change Primary's model.
 
-From the target repository, inspect the effective project configuration and rules, then use `$sol-luna` only when a bounded subtask has a likely time or context benefit. For an implementation probe, use a disposable fixture and require a clean diff review plus an exit-code-bearing test. Confirm that ordinary work keeps the user's chosen primary model and reasoning effort, and that high-effort escalation happens only for consequential decisions.
+## Scope and existing helper
 
-Suggested checks are:
+Phase one changes routing instructions, roles, project defaults and documentation only. No DSH executor, telemetry, queue or token-budget switching is added. The existing optional DeepSeek text helper and its tests remain unchanged. Read `.agents/skills/sol-luna/references/deepseek-worker.md` only for authorized use. It calls a remote API with selected text; it cannot search the repo, run tests/ADB or provide offline inference. Deterministic local commands can run directly without an agent intermediary.
 
-```powershell
-codex --version
-rg --files --hidden .codex .agents AGENTS.md
-Get-Content .codex/config.toml
-Get-Content AGENTS.md
-git diff --check
-```
+## Minimal verification
+
+Parse changed TOML and skill frontmatter, inspect diffs and confirm installed/package file hashes. Use the host's config/role discovery to distinguish parsed files from loaded roles. One bounded read-only delegation can test routing behavior; it does not prove every model mapping or production permission boundary. Reuse valid results and follow project/CI/user requirements rather than rerunning full suites by default. Report actual commands, results and remaining unverified behavior.
 
 ## Rollback
 
-Rollback is bounded to the files copied from this payload. Restore the pre-install versions from the target repository's Git diff or backup, and remove only the added Sol–Luna paths if they were previously absent. Never delete unrelated user configuration or project files.
-
-## Model observability
-
-The project leaves the primary model untouched. The trial defaults ordinary Luna agents to `gpt-6-luna` at low effort where supported; `sol_escalation` remains a separate read-only high-effort reviewer. Check the current host roster before delegation. Some Codex clients do not display each child thread's model or reasoning level in the main transcript. Treat configuration parsing, agent status, and returned evidence as the observable checks; do not claim per-child runtime settings are confirmed when the client does not expose them.
+Restore only this update's files from the pre-update backup. Remove the three newly added role files only if absent before this update; do not remove unrelated agents, the legacy alias or existing helper resources. Preserve pre-existing uncommitted work. No repository publication is required to install locally.

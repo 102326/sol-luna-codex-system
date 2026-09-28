@@ -1,28 +1,49 @@
 ---
 name: sol-luna
-description: "Delegate a bounded development subtask to a fast smaller model when parallel work saves time or context; keep tiny tasks inline and the primary agent responsible for decisions and acceptance."
+description: "Route bounded development work by scope, ambiguity, risk and verifiability; delegate only when it saves useful work, with Primary owning decisions and acceptance."
 ---
 
-# Sol-Luna workflow
+# Sol-Luna capability routing
 
-Use a smaller model as an optional worker inside an authorized development task. The primary agent owns scope, consequential decisions, integration, and final acceptance. This skill does not authorize external writes, new spending, or changes to the primary task's model settings. Higher-priority delegation restrictions and the user's model, budget, and no-delegation choices take precedence.
+Primary owns requirements, consequential decisions, integration and acceptance. Preserve the user's tools, model, reasoning, budget and delegation choices. This skill does not authorize external writes, spending beyond the task, or broader permissions. Roles define work boundaries; model names below are configurable defaults, not capability guarantees.
 
 ## Decide whether to delegate
 
-Delegate when the subtask has a clear output, can be checked independently, and leaves useful work for the primary agent to do in parallel. Good examples: targeted code discovery, a small isolated edit with fixed acceptance criteria, or a focused test/log investigation. Do the work inline when it is a short read, one command, a tiny edit, or a task whose explanation and review would cost as much as doing it. Do not spawn a worker merely to follow this skill.
+Keep tiny edits, one-command work and short reads inline. Delegate only a checkable deliverable that saves useful time or context after accounting for handoff, waiting, review and likely rework. Start with one worker; add another only for independent deliverables with non-overlapping writes. Keep the configured concurrency cap of three; a higher host limit is not a reason to fill it. No mandatory Explorer -> Architect -> Implementer -> Tester chain.
 
-Use one worker by default. Add another only for independent deliverables with non-overlapping files and a likely time benefit. Reuse an existing worker for related follow-ups instead of starting a fresh one. Avoid a separate reviewer when the primary agent can verify the result quickly. Keep architecture decisions, unclear requirements, sensitive changes, and complex debugging with the primary agent; get independent review only when it is likely to change a consequential decision.
+## Route the decision, then the execution
 
-## Route models and context
+Judge scope, ambiguity, risk and verifiability. Risk is a gate, not a majority vote: a one-line recovery change can require consequential design. Keywords such as migration, public API or cross-module trigger assessment, not automatic escalation. After Primary settles a risky decision, it may delegate a separately bounded, lower-risk execution step.
 
-Check the live delegation tool's supported models and efforts. Prefer an available Luna model at low effort for routine bounded work; currently `gpt-6-luna` fits when supported. Do not hard-code a retired model or silently choose a more expensive one. If no suitable model is available, work inline. Honor any explicit user model or reasoning choice.
+| Role | Appropriate work | Default model / effort |
+|---|---|---|
+| luna_explorer | Read-only, targeted symbols, callers, tests and evidence | gpt-6-luna / low |
+| luna_implementer | Low-risk edits with clear boundaries and readily checkable results | gpt-6-luna / low |
+| luna_tester | Scoped tests, builds, reproductions and logs; no product-source edits | gpt-6-luna / low |
+| sol_implementer | Settled design needing substantial cross-file implementation reasoning | gpt-6-sol / medium |
+| astra_architect | Unsettled consequential state, protocol, recovery or architecture decisions | gpt-6-astra / high |
+| astra_escalation | Independent read-only challenge of consequential decisions and evidence | gpt-6-astra / high |
 
-For a model override, use `fork_turns="none"` with a short self-contained task. Pass only the relevant paths, known findings, constraints that matter, and acceptance checks. Use a short history fork only when it is cheaper and clearer than restating necessary context; avoid the full conversation by default. Point to files rather than pasting large contents. Do not make the worker rediscover evidence already collected.
+Architect proposes invariants, alternatives, risks and acceptance checks; Primary decides. If Primary is capable and already has the context, design inline. Do not require weaker-model failures before addressing high-risk design. Use independent escalation only when another review is likely to change a consequential decision: credible data loss, unsafe permissions, concurrency/transaction risk, irreversible migration, or unresolved material disagreement/failure. Two failed attempts prompt diagnosis, not an automatic agent chain. The design author must not serve as the independent reviewer of that same design.
 
-A task message should state the outcome, allowed scope, relevant forbidden actions, and how to know it is done. Add exact commands, rollback, or a return format only when the subtask needs them. For a read-only task, say so. For a write task, name the edit boundary and avoid overlapping writers unless they have independent worktrees. Prefer the smallest meaningful check; require the full suite only when project rules or the change warrant it. Ask for a concise result with changed files or cited evidence, tests actually run, and remaining uncertainty. No transcript or repeated background.
+Check the live tool's available roles, models and efforts before dispatch. Configured custom roles may pin their models and reject overrides. If a suitable role/model is unavailable or stale, return the choice to Primary: work inline if qualified, or use an available generic worker with an explicit supported model and the same role boundaries when the host can enforce the needed permissions. Do not silently downgrade high-risk work or increase cost. Never claim that writing a role file proves it loaded. Preserve explicit user model choices.
 
-## Accept and finish
+`sol_escalation` is a deprecated compatibility name for the Astra review role, not a second review step. Prefer `astra_escalation` in new handoffs.
 
-Inspect the worker's diff or cited evidence. Reuse valid test results; rerun only when changes, failure, missing evidence, or an integration risk justify it. If a worker hits material ambiguity or fails, diagnose in the primary task before a bounded retry. Do not create a chain of agents to repair an unclear handoff.
+## Handoff and stop conditions
 
-Report the accepted change and its evidence, plus any material unverified behavior. Model routing may reduce latency and context, but does not guarantee lower billed tokens or quota usage.
+Use the smallest sufficient context: outcome, allowed scope, important exclusions, known evidence and acceptance checks. Link relevant files; do not repeat searches or pass the whole conversation by default. Add commands, rollback details or output structure only when useful. Use `fork_turns="none"` for model overrides; otherwise select the smallest supported history that actually helps.
+
+Name ownership for writes. No overlapping writers without isolated worktrees. Workers must not broaden scope, change architecture, add production dependencies, publish or weaken permissions without Primary resolving the need within user authorization. Do not compensate for incorrect routing by silently broadening scope or increasing reasoning. Stop and return the unresolved decision when work exceeds the role. Primary diagnoses and may re-scope or re-route; workers do not recursively build escalation chains.
+
+## Evidence and acceptance
+
+Workers return concise changed-file or location evidence, checks actually completed, exit status where applicable, and uncertainties. A started command is not a passed check. Use the smallest sufficient existing check; bug fixes or new behavior may justify one focused regression test. Reuse valid results and stop after sufficient checks pass. Expand or rerun only for affected new changes, failures/flaky behavior, missing evidence or a concrete remaining risk; do not rerun until green to hide flaky behavior. Project/CI/user requirements take precedence.
+
+Primary inspects the diff or cited evidence before acceptance. Report actual commands, verified scope and material unverified behavior. Configuration parsing, role discovery and real runtime behavior are distinct evidence levels. Routing does not guarantee lower cost, latency or quota usage.
+
+## Local tools and DSH boundary
+
+Run deterministic search, statistics and test commands directly when sufficient. DSH is not a required stage and local execution does not imply offline inference. A tool-enabled Local Worker skill is deferred; do not invent its capabilities.
+
+The existing optional [DeepSeek text helper](references/deepseek-worker.md) remains separate from cloud routing. Read it only for an authorized text-only task using that helper. It sends selected material to a remote API, cannot inspect the repo or run tests, and is not an offline DSH executor. No additional executor, task queue, telemetry or automatic budget-based switching is introduced here.
