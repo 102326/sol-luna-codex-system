@@ -1,13 +1,9 @@
 # Sol-Luna development rules
 
-- Keep requirements, decisions, risk judgments, and final acceptance in the primary Sol thread.
-- Use `gpt-5.6-sol` at medium reasoning as the fallback for the primary controller when the user has not explicitly selected a model or reasoning effort; explicit user selections take precedence. Delegate bounded exploration, implementation, and testing to the project custom agents `luna_explorer`, `luna_implementer`, and `luna_tester` when the work fits their roles.
-- Keep search output, test logs, and intermediate exploration in subagent threads; return concise evidence-backed summaries to Sol.
-- Parallelize only independent read-heavy exploration, tests, retrieval, or log analysis. Serialize tasks that can modify the same file. Without independent worktrees, never let multiple subagents edit the same code region concurrently.
-- Every delegation must state: goal; allowed files/directories; forbidden scope; known context; completion criteria; validation commands; rollback method; and the required result sections.
-- Luna must stop and return ambiguities, risks, or out-of-scope needs to Sol. Luna may not broaden requirements, introduce an architecture direction, add production dependencies, weaken permissions, or modify unrelated files.
-- Luna finishing does not mean acceptance. Sol must inspect the actual diff or file state, review command output and exit status, and decide to accept, request rework, add tests, or roll back.
-- A started test is not a passed test. Report passed, failed, skipped, and not-run checks distinctly.
-- Support important conclusions with file paths, symbols, commands, diffs, or test evidence. Do not report conclusions alone.
-- Keep changes minimal; do not opportunistically refactor unrelated code.
-- Use `sol_escalation` only for the escalation conditions defined by `$sol-luna`. Ordinary implementation, formatting, routine testing, simple bugs, searches, and documentation work stay with Sol Medium and Luna.
+- The primary agent owns requirements, consequential decisions, integration, and final acceptance. Preserve the user's model, reasoning, budget, and delegation choices.
+- Apply `$sol-luna` only when a bounded subtask offers a likely time or context saving. Keep one-command work and tiny edits inline; start with one worker and reuse it for related follow-ups.
+- Keep each handoff brief: outcome, relevant file scope and limits, completion check, and evidence expected. Add commands or rollback details only when needed. Do not repeat the entire conversation or enforce a fixed return template.
+- Parallelize only independent work. Do not let agents write the same code region concurrently without isolated worktrees.
+- Workers report concise evidence, changed files when applicable, tests actually completed, and uncertainties. The primary agent inspects the diff or cited evidence and reuses valid test results instead of rerunning them by default.
+- Keep architecture, unclear requirements, sensitive changes, and complex debugging with the primary agent. Use a separate high-effort review only when it is likely to change a consequential decision.
+- The user's instructions and higher-priority execution limits take precedence over this project guidance.
