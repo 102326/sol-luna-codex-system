@@ -1,60 +1,28 @@
 ---
 name: sol-luna
-description: Orchestrate bounded software-development work with Sol planning and acceptance, Luna exploration/implementation/testing, and tightly gated Sol High escalation. Use for development tasks that benefit from explicit delegation contracts and evidence-based review.
+description: "Delegate a bounded development subtask to a fast smaller model when parallel work saves time or context; keep tiny tasks inline and the primary agent responsible for decisions and acceptance."
 ---
 
 # Sol-Luna workflow
 
-Keep the primary Sol thread responsible for requirements, constraints, decisions, risk, and final acceptance. Use Sol with `gpt-5.6-sol` and medium reasoning as the fallback when the user has not explicitly selected a model or reasoning effort; explicit user selections take precedence. Delegate only bounded work to the project custom agents:
+Use a smaller model as an optional worker inside an authorized development task. The primary agent owns scope, consequential decisions, integration, and final acceptance. This skill does not authorize external writes, new spending, or changes to the primary task's model settings. Higher-priority delegation restrictions and the user's model, budget, and no-delegation choices take precedence.
 
-- `luna_explorer`: read-only code discovery, call-chain tracing, and evidence gathering.
-- `luna_implementer`: small workspace changes after the design and acceptance criteria are fixed.
-- `luna_tester`: reproduction, builds, tests, and log analysis; source edits are forbidden.
-- `sol_escalation`: read-only `gpt-5.6-sol` high-reasoning review, only when an escalation gate below is met.
+## Decide whether to delegate
 
-## Workflow
+Delegate when the subtask has a clear output, can be checked independently, and leaves useful work for the primary agent to do in parallel. Good examples: targeted code discovery, a small isolated edit with fixed acceptance criteria, or a focused test/log investigation. Do the work inline when it is a short read, one command, a tiny edit, or a task whose explanation and review would cost as much as doing it. Do not spawn a worker merely to follow this skill.
 
-1. Inspect the request, applicable `AGENTS.md`, existing code/configuration, and rollback boundary. Clarify only decisions that materially change scope or risk.
-2. Decide whether read-only exploration is needed. Delegate independent read-heavy tasks in parallel only when they do not depend on one another.
-3. Split implementation into the smallest testable units. Never run overlapping writers against the same file or code region without independent worktrees.
-4. Before every delegation, give Luna the complete contract below. Do not send open-ended requests such as "finish this feature."
-5. Wait for structured results. Review cited files, actual changes, commands, exit codes, and test evidence in the Sol thread.
-6. Accept, request a bounded rework, add a bounded test task, or roll back. Luna completion alone is not acceptance, and a command merely starting is not a passing test.
-7. Invoke `sol_escalation` only when an escalation gate is clearly met. Otherwise keep the decision with Sol Medium.
-8. Finish with the accepted scope, evidence, validation status, remaining uncertainty, and rollback instructions.
+Use one worker by default. Add another only for independent deliverables with non-overlapping files and a likely time benefit. Reuse an existing worker for related follow-ups instead of starting a fresh one. Avoid a separate reviewer when the primary agent can verify the result quickly. Keep architecture decisions, unclear requirements, sensitive changes, and complex debugging with the primary agent; get independent review only when it is likely to change a consequential decision.
 
-## Delegation contract
+## Route models and context
 
-Provide all of the following:
+Check the live delegation tool's supported models and efforts. Prefer an available Luna model at low effort for routine bounded work; currently `gpt-6-luna` fits when supported. Do not hard-code a retired model or silently choose a more expensive one. If no suitable model is available, work inline. Honor any explicit user model or reasoning choice.
 
-1. **Goal:** the single outcome required now.
-2. **Allowed scope:** exact files or directories that may be read and, when applicable, modified.
-3. **Forbidden scope:** files, behaviors, dependencies, and external actions that are off limits.
-4. **Known context:** relevant call paths, constraints, and prior conclusions.
-5. **Completion criteria:** observable conditions that define done.
-6. **Validation:** exact build, test, reproduction, or inspection commands and expected evidence.
-7. **Rollback:** how to restore the pre-task state.
-8. **Return format:** Investigation conclusion; Modified files; Key code changes; Commands executed; Test results; Unresolved issues; Risks and recommendations. For read-only work, replace modification sections with files/symbols examined and state that nothing changed.
+For a model override, use `fork_turns="none"` with a short self-contained task. Pass only the relevant paths, known findings, constraints that matter, and acceptance checks. Use a short history fork only when it is cheaper and clearer than restating necessary context; avoid the full conversation by default. Point to files rather than pasting large contents. Do not make the worker rediscover evidence already collected.
 
-If any required field is missing or conflicts with the agent's sandbox, the agent must stop expansion and return the gap to Sol.
+A task message should state the outcome, allowed scope, relevant forbidden actions, and how to know it is done. Add exact commands, rollback, or a return format only when the subtask needs them. For a read-only task, say so. For a write task, name the edit boundary and avoid overlapping writers unless they have independent worktrees. Prefer the smallest meaningful check; require the full suite only when project rules or the change warrant it. Ask for a concise result with changed files or cited evidence, tests actually run, and remaining uncertainty. No transcript or repeated background.
 
-## Escalation gates
+## Accept and finish
 
-Use `sol_escalation` only for at least one of these conditions:
+Inspect the worker's diff or cited evidence. Reuse valid test results; rerun only when changes, failure, missing evidence, or an integration risk justify it. If a worker hits material ambiguity or fails, diagnose in the primary task before a bounded retry. Do not create a chain of agents to repair an unclear handoff.
 
-- an architecture decision crosses multiple subsystems;
-- a data migration, protocol change, or irreversible operation is involved;
-- security, permissions, concurrency, race conditions, or data consistency are central;
-- alternatives have major long-term cost or tradeoffs;
-- Sol Medium has twice failed to reach a credible conclusion;
-- a wrong decision could cause production failure, data damage, or large-scale rework.
-
-Do not escalate ordinary features, formatting, routine tests, simple bugs, code search, or documentation cleanup. A temporary instruction such as "do not use High for this task" disables escalation unless completing the request would otherwise require a new high-risk decision; in that case stop and ask the user rather than invoking High.
-
-## Acceptance rules
-
-- Inspect the real diff or final file state; do not trust summaries alone.
-- Verify that only authorized files changed and that rollback remains possible.
-- Separate passed, failed, skipped, and unobservable checks.
-- Require file, symbol, command, or test evidence for key conclusions.
-- Keep unrelated refactors and new production dependencies out of scope.
+Report the accepted change and its evidence, plus any material unverified behavior. Model routing may reduce latency and context, but does not guarantee lower billed tokens or quota usage.

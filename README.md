@@ -1,38 +1,23 @@
 # Sol–Luna Codex System
 
-This private-repository payload packages a reusable Sol–Luna development workflow for Codex. It targets the verified Codex baseline `0.150.0-alpha.8` and keeps the primary Sol controller responsible for planning, risk decisions, review, and acceptance.
+This private repository contains the current portable Sol–Luna skill and an older optional project-agent package. The skill keeps the primary agent responsible for decisions, integration, and acceptance. It delegates only bounded tasks when parallel work saves time or context; tiny tasks stay inline.
 
 ## Contents
 
-- `.codex/config.toml`: project controller and multi-agent defaults.
-- `.codex/agents/`: bounded Explorer, Implementer, Tester, and High-escalation agent definitions.
-- `.agents/skills/sol-luna/`: the explicit `$sol-luna` workflow skill and invocation metadata.
-- `AGENTS.md`: persistent project rules.
+- `.agents/skills/sol-luna/`: current `$sol-luna` skill and invocation metadata, synchronized from machine 1 on 2026-09-29.
+- `.codex/config.toml` and `.codex/agents/`: older optional project-agent configuration retained for reference. Its pinned model names and rigid task contracts do not define the current skill.
+- `AGENTS.md`: repository maintenance guidance.
 
 ## Installation
 
-Copy or merge the included relative paths into a target repository. Preserve existing files and merge TOML tables rather than replacing an existing configuration. Explicit user model and reasoning selections take precedence. When the user has not selected them, Sol with `gpt-5.6-sol` and medium reasoning is the recommended fallback; project configuration still supplies the subagent defaults. Review the resulting diff before use.
+For a global skill, back up any existing `sol-luna` skill and copy `.agents/skills/sol-luna/` to the target machine's actual Codex skills directory (usually `~/.codex/skills/sol-luna/`). Review the diff before replacing an older version. The skill checks available worker models at runtime and respects the user's selected model, reasoning level, budget, and no-delegation choices. It does not require the older project-agent configuration.
 
-The payload intentionally contains no credentials, saved logs, caches, generated validation fixtures, or user-specific absolute paths. It does not initialize a Git repository.
+Use `.codex/config.toml` and `.codex/agents/` only if you intentionally want that historical project setup. Merge with local configuration after checking current Codex support and model availability; never copy them into global configuration unchanged.
 
 ## Validation
 
-From the target repository, inspect the effective project configuration and rules, then run a bounded read-only delegation through `$sol-luna`. For an implementation probe, use a disposable fixture and require a clean diff review plus an exit-code-bearing test. Confirm that ordinary work uses the user's selected primary model and reasoning effort, or the Sol Medium fallback when no selection is made, and that `sol_escalation` is invoked only when an escalation gate in the skill is met.
-
-Suggested checks are:
-
-```powershell
-codex --version
-rg --files --hidden .codex .agents AGENTS.md
-Get-Content .codex/config.toml
-Get-Content AGENTS.md
-git diff --check
-```
+Check that the installed `SKILL.md` and `agents/openai.yaml` match this repository and are available in a new task. If testing delegation, choose a bounded read-only task that genuinely saves work and inspect the worker's cited evidence. A simple task may correctly run inline.
 
 ## Rollback
 
-Rollback is bounded to the files copied from this payload. Restore the pre-install versions from the target repository's Git diff or backup, and remove only the added Sol–Luna paths if they were previously absent. Never delete unrelated user configuration or project files.
-
-## Model observability
-
-The project files recommend Sol as the fallback `gpt-5.6-sol` with medium reasoning when the user has not selected a primary model or reasoning effort. They retain ordinary Luna agents as `gpt-5.6-luna` with medium reasoning and `sol_escalation` as Sol High. Some Codex clients do not display each child thread's model or reasoning level in the main transcript. Treat configuration parsing, agent status, and returned evidence as the observable checks; do not claim per-child runtime settings are confirmed when the client does not expose them.
+Restore the skill from the backup made before installing. Restore any separately merged project configuration from its own backup.
