@@ -1,28 +1,50 @@
 ---
 name: sol-luna
-description: "Delegate a bounded development subtask to a fast smaller model when parallel work saves time or context; keep tiny tasks inline and the primary agent responsible for decisions and acceptance."
+description: "When explicitly requested, assess bounded development delegation against quota, handoff, worker and review cost; otherwise work inline, with Primary owning decisions and acceptance."
 ---
 
-# Sol-Luna workflow
+# Sol-Luna: quota-aware delegation
 
-Use a smaller model as an optional worker inside an authorized development task. The primary agent owns scope, consequential decisions, integration, and final acceptance. This skill does not authorize external writes, new spending, or changes to the primary task's model settings. Higher-priority delegation restrictions and the user's model, budget, and no-delegation choices take precedence.
+Primary owns requirements, architecture, risk, ownership, integration and final acceptance. Preserve the user's selected Primary model, reasoning, budget and delegation restrictions. This skill does not authorize external writes, new spending or changing Primary settings. Explicit invocation permits assessing delegation; it does not require a worker or override higher-priority restrictions.
 
-## Decide whether to delegate
+## Decide whether delegation earns its cost
 
-Delegate when the subtask has a clear output, can be checked independently, and leaves useful work for the primary agent to do in parallel. Good examples: targeted code discovery, a small isolated edit with fixed acceptance criteria, or a focused test/log investigation. Do the work inline when it is a short read, one command, a tiny edit, or a task whose explanation and review would cost as much as doing it. Do not spawn a worker merely to follow this skill.
+Ask whether Primary can do the task more cheaply, quickly and clearly inline. Delegate only with clear expected net value after handoff, worker reading/execution, Primary review, integration, verification and likely rework. Compare total computation and quota as well as latency and context relief; parallel work does not inherently save quota. Without clear benefit, work inline.
 
-Use one worker by default. Add another only for independent deliverables with non-overlapping files and a likely time benefit. Reuse an existing worker for related follow-ups instead of starting a fresh one. Avoid a separate reviewer when the primary agent can verify the result quickly. Keep architecture decisions, unclear requirements, sensitive changes, and complex debugging with the primary agent; get independent review only when it is likely to change a consequential decision.
+Usually keep one command, a search, one or two file reads, a small known edit, local CSS or a typo inline. Be cautious when Primary already knows the context, a worker must reread the same material, or acceptance would require redoing most of its work. Large call-chain searches, log analysis, an independent subsystem investigation, repetitive migration or a separate costly test run can earn delegation when concise evidence spares Primary the intermediate material. Do not hunt for subtasks merely because this skill is available, or split a naturally serial problem to simulate parallelism.
 
-## Route models and context
+Use known user budget preferences and available cost information; do not invent model prices, remaining quota or savings. Unknown cost is not permission to upgrade. No billing system, telemetry or routine quota polling is required. If material budget uncertainty prevents safe delegation, stay inline or ask only for the missing decision.
 
-Check the live delegation tool's supported models and efforts. Prefer an available Luna model at low effort for routine bounded work; currently `gpt-6-luna` fits when supported. Do not hard-code a retired model or silently choose a more expensive one. If no suitable model is available, work inline. Honor any explicit user model or reasoning choice.
+## Scheduling preferences
 
-For a model override, use `fork_turns="none"` with a short self-contained task. Pass only the relevant paths, known findings, constraints that matter, and acceptance checks. Use a short history fork only when it is cheaper and clearer than restating necessary context; avoid the full conversation by default. Point to files rather than pasting large contents. Do not make the worker rediscover evidence already collected.
+These are preferences expressed in the task, not a new configuration system. Default to Balanced with a conservative bias.
 
-A task message should state the outcome, allowed scope, relevant forbidden actions, and how to know it is done. Add exact commands, rollback, or a return format only when the subtask needs them. For a read-only task, say so. For a write task, name the edit boundary and avoid overlapping writers unless they have independent worktrees. Prefer the smallest meaningful check; require the full suite only when project rules or the change warrant it. Ask for a concise result with changed files or cited evidence, tests actually run, and remaining uncertainty. No transcript or repeated background.
+| Preference | Routing |
+|---|---|
+| Conserve | Prefer inline; use at most one worker only for substantial mechanical work or context relief. No automatic reviewer or escalation. |
+| Balanced | Start inline; if justified, use one bounded worker. A second requires independent deliverables, non-overlapping scope, little duplicated context and clear time benefit within budget. |
+| Speed | Only when the user explicitly prioritizes speed, consider more independent parallel work within live/user concurrency limits and budget. No overlapping writers, redundant reviewers or slot-filling. |
 
-## Accept and finish
+Parallel capacity is a ceiling, not a target. Reuse an existing worker for related follow-ups. Ordinary flow is Worker -> Primary review; Primary's own diff/evidence review normally suffices.
 
-Inspect the worker's diff or cited evidence. Reuse valid test results; rerun only when changes, failure, missing evidence, or an integration risk justify it. If a worker hits material ambiguity or fails, diagnose in the primary task before a bounded retry. Do not create a chain of agents to repair an unclear handoff.
+## Choose capability without silent upgrades
 
-Report the accepted change and its evidence, plus any material unverified behavior. Model routing may reduce latency and context, but does not guarantee lower billed tokens or quota usage.
+Check the live tool's supported models, reasoning efforts and any pinned role settings before dispatch. Prefer the lowest-cost currently available model and sufficient effort that can reliably complete the bounded task, respecting explicit user choices. Model names and role labels are not proof of capability or price; no specific version is a permanent routing default. If suitable capability or cost cannot be established, work inline rather than guessing or quietly switching to a premium model. Budget pressure never justifies inadequate capability.
+
+Do not upgrade Primary. If a worker or escalation would use a materially more expensive model or reasoning setting than the authorized choice, explain the concrete need and obtain explicit user authorization before dispatch. Skill invocation, a role named architect/reviewer, and a free parallel slot do not provide that authorization.
+
+Independent review/escalation is exceptional: consider it for consequential architecture uncertainty, data migration, security/permissions, races/consistency, irreversible operations, interacting core subsystems or credible large rework risk, only when another view can materially resolve the decision and budget permits. A category label alone does not trigger it. Ordinary features, bugs, documentation, routine tests/reviews or wanting another model's reassurance do not justify it. Primary may handle consequential design directly; its design is not an independent review of itself. Failures prompt diagnosis, not automatic agent chains or increased reasoning.
+
+## Keep workers narrow
+
+For model overrides use `fork_turns="none"` and a short self-contained handoff; otherwise pass the least context that preserves the task. Point to relevant files and existing evidence rather than duplicating full history or making workers rediscover findings.
+
+State the output, edit/read boundary, consequential constraints and completion checks in proportion to the task. Workers return a concise diff or cited evidence, checks actually run and material uncertainty. They do not expand scope, decide new architecture, spawn descendants, publish, change permissions or silently raise model/budget levels. Unsettled decisions return to Primary. Avoid overlapping writes; independent worktrees do not remove integration ownership.
+
+## Accept and finish within scope
+
+Define this task's Done from the user request and risk before work. Primary inspects actual diffs/evidence and owns integration. Use targeted, risk-proportional validation; reuse valid unaffected checks and rerun only for changed behavior, failure, missing core evidence or a concrete risk. Preserve failed/flaky results and investigate them rather than retrying to green.
+
+Report delivery, validation and real limitations. Additional devices, versions or optional integrations belong in future coverage, not automatic unfinished work. Skill metadata/config parsing is not proof of fresh-session loading, actual delegation choices or measured quota savings.
+
+Legacy project-agent files are archival examples, not portable skill defaults. Do not install their pinned models, reasoning or concurrency merely to use this skill.

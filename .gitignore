@@ -23,6 +23,6 @@
 **/.tmp/
 **/.codex/backups/
 
-# Local overrides (the checked-in project config remains trackable)
+# Local overrides if historical project settings are deliberately installed
 .codex/config.local.toml
 .codex/agents.local/

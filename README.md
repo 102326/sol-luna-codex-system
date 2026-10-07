@@ -1,23 +1,27 @@
-# Sol–Luna Codex System
+# Sol-Luna Codex System
 
-This private repository contains the current portable Sol–Luna skill and an older optional project-agent package. The skill keeps the primary agent responsible for decisions, integration, and acceptance. It delegates only bounded tasks when parallel work saves time or context; tiny tasks stay inline.
+This public repository contains the portable Sol-Luna skill. Primary owns requirements, architecture, risk, integration and acceptance. Delegate only when clear net value exceeds handoff, worker, review and likely rework cost, considering total computation and quota as well as time. Otherwise work inline.
 
-## Contents
+## Contents and installation
 
-- `.agents/skills/sol-luna/`: current `$sol-luna` skill and invocation metadata, synchronized from machine 1 on 2026-09-29.
-- `.codex/config.toml` and `.codex/agents/`: older optional project-agent configuration retained for reference. Its pinned model names and rigid task contracts do not define the current skill.
-- `AGENTS.md`: repository maintenance guidance.
+- `.agents/skills/sol-luna/`: current portable skill and invocation metadata.
+- `AGENTS.md`: repository maintenance guidance, not an instruction to auto-invoke the skill.
+- `archive/legacy-project-agents/`: historical project configuration and roles, physically outside the auto-discovered `.codex/` path. Their model names, reasoning, concurrency and task contracts are examples, not current defaults.
 
-## Installation
+For global installation, compare and back up any existing skill, then copy `.agents/skills/sol-luna/` into the target machine's actual skills directory (usually `~/.codex/skills/sol-luna/`). Project installation can use `.agents/skills/sol-luna/`. Merge independent local changes rather than overwriting them. Do not copy this repository's AGENTS.md over unrelated project rules or restore archived TOML into `.codex/` during normal installation.
 
-For a global skill, back up any existing `sol-luna` skill and copy `.agents/skills/sol-luna/` to the target machine's actual Codex skills directory (usually `~/.codex/skills/sol-luna/`). Review the diff before replacing an older version. The skill checks available worker models at runtime and respects the user's selected model, reasoning level, budget, and no-delegation choices. It does not require the older project-agent configuration.
+Invoke explicitly with `$sol-luna`; implicit invocation is disabled to avoid routing overhead in ordinary development tasks. Invocation asks for a routing decision, not mandatory delegation. Existing host/project rules may independently govern agents. Reload discovery in a new task to check installed metadata; this does not change the current task's model or already-loaded roles.
 
-Use `.codex/config.toml` and `.codex/agents/` only if you intentionally want that historical project setup. Merge with local configuration after checking current Codex support and model availability; never copy them into global configuration unchanged.
+## Routing and budget
 
-## Validation
+Primary keeps the user's chosen model and reasoning. A justified worker uses the lowest-cost available capability sufficient for its bounded task, checked against live support and pinned settings. No model version is a permanent default; unknown pricing is not assumed cheap. Materially more expensive model or reasoning choices require explicit authorization. Risk still gates delegation; budget pressure never justifies inadequate capability.
 
-Check that the installed `SKILL.md` and `agents/openai.yaml` match this repository and are available in a new task. If testing delegation, choose a bounded read-only task that genuinely saves work and inspect the worker's cited evidence. A simple task may correctly run inline.
+Default to conservative Balanced: inline unless useful, then one worker. Conserve raises the benefit threshold and permits at most one worker. Speed requires the user's explicit speed preference; additional workers still need independent scope, minimal context duplication, clear benefit and budget. Capacity is a ceiling. Reuse workers for follow-ups. Ordinary work uses Worker -> Primary review, without a separate reviewer. Independent review/escalation is reserved for consequential uncertainty and affordable, useful evidence.
 
-## Rollback
+Quota awareness is a qualitative cost decision, not a billing service or savings guarantee. No new roles, metering, telemetry, pricing dependency or automatic model upgrades are introduced.
 
-Restore the skill from the backup made before installing. Restore any separately merged project configuration from its own backup.
+## Validation and coverage
+
+Validate skill frontmatter/YAML, confirm explicit-only invocation/default prompt, inspect archive paths and local installation diffs. Compare installed files after merging. Archived TOML can be parsed without activating it. For meaningful authorized delegation, inspect live model selection and returned evidence; small tasks should remain inline. Do not spawn an agent just to fill a validation checklist.
+
+Fresh-session discovery, actual routing and quota savings require separate runtime evidence; static validation alone does not prove them. Additional environments are coverage limits, not missing implementation. Restore backed-up skill files to roll back; archived configuration is never automatically installed or executed.

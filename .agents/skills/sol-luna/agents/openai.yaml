@@ -1,6 +1,6 @@
 interface:
   display_name: "Sol-Luna Development"
-  short_description: "Use a small worker only when delegation saves work"
-  default_prompt: "Use $sol-luna to delegate a bounded development subtask only if it saves time or context; otherwise work inline."
+  short_description: "Delegate only for clear net value within budget"
+  default_prompt: "Use $sol-luna to assess net value after handoff, worker and review cost, including quota; unless delegation clearly benefits the task, work inline and preserve Primary acceptance."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

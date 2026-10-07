@@ -1,7 +1,11 @@
 # Sol-Luna repository guidance
 
-The current portable skill is `.agents/skills/sol-luna/SKILL.md`. Keep its instruction and `agents/openai.yaml` metadata in sync with the installed version when publishing an update.
+The portable skill lives in `.agents/skills/sol-luna/`. Keep SKILL.md, agents/openai.yaml and README consistent; compare installed copies before synchronizing and preserve independent local edits.
 
-The `.codex/config.toml` and `.codex/agents/*.toml` files are a historical, optional project-agent package. Do not treat their pinned models, fixed delegation fields, or project settings as defaults for the portable skill. Preserve a user's explicit model, reasoning, budget, and delegation choices. The primary agent retains decisions and acceptance.
+Use the skill when explicitly requested, not automatically for every coding task. Default to inline unless delegation has clear net value after handoff, worker, review and likely rework costs, including quota and duplicated context. Normally use at most one worker; extra workers require independent scope and concrete time benefit within the user's budget. Capacity is a ceiling, not a goal; do not automatically create reviewers or escalation chains.
 
-Before publishing, inspect the exact diff, confirm no credentials or machine-specific secrets were added, and verify the remote commit. Do not force-push.
+Primary retains requirements, architecture, risk, ownership, integration and acceptance. Preserve its selected model and reasoning. Check live worker capability and cost; materially more expensive models or effort require explicit user authorization. Do not hard-code a permanent model version or add roles/billing infrastructure for this policy.
+
+Historical configuration is under `archive/legacy-project-agents/`, not `.codex/`. Do not move it into auto-discovery paths during ordinary installation, use its pinned models/reasoning/concurrency as current defaults, or overwrite unrelated host configuration.
+
+Define scoped Done and validate by actual risk. Reuse valid evidence, separate additional coverage from missing implementation and preserve failures. Before authorized publication, inspect the exact diff, check for credentials/machine secrets and verify the remote commit. Do not force-push.
