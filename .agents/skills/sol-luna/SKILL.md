@@ -21,8 +21,8 @@ Judge scope, ambiguity, risk and verifiability. Risk is a gate, not a majority v
 | luna_implementer | Low-risk edits with clear boundaries and readily checkable results | gpt-6-luna / low |
 | luna_tester | Scoped tests, builds, reproductions and logs; no product-source edits | gpt-6-luna / low |
 | sol_implementer | Settled design needing substantial cross-file implementation reasoning | gpt-6-sol / medium |
-| astra_architect | Unsettled consequential state, protocol, recovery or architecture decisions | gpt-6-astra / high |
-| astra_escalation | Independent read-only challenge of consequential decisions and evidence | gpt-6-astra / high |
+| astra_architect | Unsettled consequential state, protocol, recovery or architecture decisions | gpt-6.1-sol / high |
+| astra_escalation | Independent read-only challenge of consequential decisions and evidence | gpt-6.1-sol / high |
 
 Architect proposes invariants, alternatives, risks and acceptance checks; Primary decides. If Primary is capable and already has the context, design inline. Do not require weaker-model failures before addressing high-risk design. Use independent escalation only when another review is likely to change a consequential decision: credible data loss, unsafe permissions, concurrency/transaction risk, irreversible migration, or unresolved material disagreement/failure. Two failed attempts prompt diagnosis, not an automatic agent chain. The design author must not serve as the independent reviewer of that same design.
 
