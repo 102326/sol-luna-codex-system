@@ -1,5 +1,7 @@
 # Sol-Luna Codex System
 
+> **Historical experiment.** This branch records an earlier project-agent routing trial. Its pinned models and role defaults are preserved for reproducing that trial. For an existing installation, use the current policy and Skill supplied by your own workspace or administrator.
+
 Capability-aware delegation with Primary owning scope, decisions, integration and acceptance. Retains the `sol-luna` skill name. Choose a sufficient role using scope, ambiguity, risk and verifiability while considering handoff, review and rework costs. Risk is a gate, not a score averaged away by a small diff. No mandatory multi-agent pipeline or guaranteed cost reduction.
 
 ## Roles and defaults
